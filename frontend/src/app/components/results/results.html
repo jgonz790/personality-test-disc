@@ -1,0 +1,93 @@
+<div class="results-container">
+  @if (result) {
+    <!-- Dominant personality hero -->
+    <div class="dominant-hero">
+      <div class="dominant-emoji">{{ getEmoji(result.dominantPersonality.key) }}</div>
+      <h1>Eres un <span [style.color]="getColor(result.dominantPersonality.key)">{{ result.dominantPersonality.name }}</span></h1>
+      <span class="keyword-badge" [style.background]="getColor(result.dominantPersonality.key)">
+        {{ result.dominantPersonality.keyword }}
+      </span>
+      <p class="description">{{ result.dominantPersonality.description }}</p>
+    </div>
+
+    <!-- Score chart -->
+    <div class="chart-section">
+      <h2>Tus Puntajes</h2>
+      <div class="bar-chart">
+        @for (rank of result.ranking; track rank.key) {
+          <div class="bar-row">
+            <div class="bar-label">
+              <span class="bar-emoji">{{ getEmoji(rank.key) }}</span>
+              <span class="bar-name">{{ rank.name }}</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width.%]="getBarWidth(rank.score)"
+                   [style.background]="getColor(rank.key)">
+              </div>
+            </div>
+            <span class="bar-score" [style.color]="getColor(rank.key)">{{ rank.score }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Ranking cards -->
+    <div class="ranking-section">
+      <h2>Tu Ranking</h2>
+      <div class="ranking-grid">
+        @for (rank of result.ranking; track rank.key) {
+          <div class="ranking-card" [class.dominant]="rank.position === 1"
+               [style.border-color]="rank.position === 1 ? getColor(rank.key) : 'transparent'">
+            <span class="position">#{{ rank.position }}</span>
+            <span class="rank-emoji">{{ getEmoji(rank.key) }}</span>
+            <span class="rank-name">{{ rank.name }}</span>
+            <span class="rank-score" [style.color]="getColor(rank.key)">{{ rank.score }} pts</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Dominant personality details -->
+    <div class="details-section">
+      <h2>Detalle: {{ result.dominantPersonality.name }}</h2>
+
+      <div class="detail-card positive">
+        <h3>A favor</h3>
+        <div class="tags">
+          @for (item of result.dominantPersonality.positives; track item) {
+            <span class="tag positive-tag">{{ item }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="detail-card negative">
+        <h3>Areas de mejora</h3>
+        <div class="tags">
+          @for (item of result.dominantPersonality.negatives; track item) {
+            <span class="tag negative-tag">{{ item }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="detail-card needs">
+        <h3>Lo que necesitas</h3>
+        <ul>
+          @for (item of result.dominantPersonality.needs; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn-secondary" (click)="goHome()">Inicio</button>
+      <button class="btn-primary" (click)="retakeTest()">Repetir Test</button>
+    </div>
+  } @else {
+    <div class="no-results">
+      <p>No hay resultados disponibles.</p>
+      <button class="btn-primary" (click)="goHome()">Ir al Inicio</button>
+    </div>
+  }
+</div>

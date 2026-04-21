@@ -1,0 +1,77 @@
+<div class="test-container">
+  @if (loading) {
+    <div class="loader">
+      <div class="spinner"></div>
+      <p>Cargando preguntas...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="loader">
+      <p class="error">{{ errorMessage }}</p>
+      <button class="next-btn" style="max-width:300px;margin-top:1rem" (click)="ngOnInit()">Reintentar</button>
+    </div>
+  } @else if (submitting) {
+    <div class="loader">
+      <div class="spinner"></div>
+      <p>Calculando tu personalidad...</p>
+    </div>
+  } @else {
+    <div class="test-card">
+      <!-- Progress bar -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="round-label">Ronda {{ currentRound + 1 }} de {{ rounds.length }}</span>
+          <span class="progress-pct">{{ progressPercent | number:'1.0-0' }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="progressPercent"></div>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="instructions">
+        <h2>Asigna un puntaje a cada afirmacion</h2>
+        <p>
+          <strong>4</strong> = la que mas te describe &nbsp;
+          <strong>3</strong> = bastante &nbsp;
+          <strong>2</strong> = algo &nbsp;
+          <strong>1</strong> = la que menos
+        </p>
+      </div>
+
+      <!-- Options -->
+      <div class="options-list">
+        @for (option of currentOptions; track option.personality; let i = $index) {
+          <div class="option-card" [class.ranked]="option.rank !== null"
+               [style.border-color]="option.rank !== null ? getPersonalityColor(option.personality) : 'transparent'">
+            <div class="option-text">{{ option.text }}</div>
+            <div class="rank-buttons">
+              @for (rank of [4, 3, 2, 1]; track rank) {
+                <button
+                  class="rank-btn"
+                  [class.active]="option.rank === rank"
+                  [class.used]="isRankUsed(rank) && option.rank !== rank"
+                  (click)="assignRank(i, rank)"
+                  [style.--btn-color]="getPersonalityColor(option.personality)">
+                  {{ rank }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Next button -->
+      <button class="next-btn"
+              [disabled]="!isRoundComplete()"
+              (click)="nextRound()">
+        @if (currentRound < rounds.length - 1) {
+          Siguiente Ronda
+          <span class="arrow">&#8594;</span>
+        } @else {
+          Ver Resultados
+          <span class="arrow">&#10003;</span>
+        }
+      </button>
+    </div>
+  }
+</div>

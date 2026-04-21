@@ -1,0 +1,7 @@
+services:
+  disc-test:
+    build: .
+    container_name: disc-personality-test
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
